@@ -2,6 +2,9 @@ from django.shortcuts import render
 from .models import DynamicForm
 
 def dynamic_form_view(request, form_id):
+    if form_id is None:
+        form_id = 1
+        
     dynamic_form = DynamicForm.objects.get(pk=form_id)
 
     if request.method == 'POST':

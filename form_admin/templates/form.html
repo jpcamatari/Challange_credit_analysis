@@ -1,5 +1,37 @@
 {% extends 'base.html' %}
 
 {% block 'conteudo'%}
-<h1>Olá {{nome}}, tudo bem ?</h1>
+
+<html>
+<head>
+    <title>{{ dynamic_form.title }}</title>
+</head>
+<body>
+    <section>
+        <title>{{ dynamic_form.title }}</title>
+        
+        <form class="p-3 mb-3 mt-5 mx-auto w-25 border border-shadow rounded bg-light text-dark" method="post">
+            {% csrf_token %}
+            <h3>{{ dynamic_form.title }}</h3>
+            <div class="mb-3 mt-2 p-3 gap-3">
+                {% for field in dynamic_form.form_fields.all %}
+                    <label for="{{ field.id }}">{{ field.label }}</label><br>
+                    {% if field.field_type == 'text' %}
+                        <input type="text" name="{{ field.id }}" id="{{ field.id }}"><br>
+                    {% elif field.field_type == 'number' %}
+                        <input type="number" name="{{ field.id }}" id="{{ field.id }}"><br>
+                    {% elif field.field_type == 'date' %}
+                        <input type="date" name="{{ field.id }}" id="{{ field.id }}"><br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div>
+                <input type="submit" class="btn btn-primary d-grid gap-2 d-md-flex justify-content-md-end" value="Enviar Analise">
+            </div>
+        </form>
+    </section>
+</body>
+</html>
+
+
 {%endblock%}
