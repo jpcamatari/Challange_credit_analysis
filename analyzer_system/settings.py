@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'form_admin',
+    'django_celery_results'
 ]
 
 MIDDLEWARE = [
@@ -126,3 +127,12 @@ STATIC_ROOT = os.path.join('static')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+#CELERY
+
+CELERY_BROKER_URL = 'redis://default:6oeFiBVz6dy9B2tkcMMyx536fsIRUk7Y@redis-17406.c308.sa-east-1-1.ec2.cloud.redislabs.com:17406'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_CONTENT = 'json'
+
+CELERY_RESULT_BACKEND = 'django-db'

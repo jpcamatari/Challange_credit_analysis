@@ -1,6 +1,9 @@
+from celery import shared_task
+
 from django.shortcuts import render, HttpResponse
 from .models import DynamicForm
 
+@shared_task
 def dynamic_form_view(request, form_id):
     if form_id is None:
         form_id = 1
@@ -22,4 +25,3 @@ def dynamic_form_view(request, form_id):
         fields = dynamic_form.form_fields.all()
         context = {'dynamic_form': dynamic_form, 'fields': fields}
         return render(request, 'form.html', context)
-
