@@ -1,27 +1,25 @@
 from celery import shared_task
-
-from django.shortcuts import render, HttpResponse
+import redis
+import json
 from .models import DynamicForm
 
-@shared_task
-def dynamic_form_view(request, form_id):
+
+def get_form_data(request, dynamic_form, form_id):
+    form_data = {}
     if form_id is None:
         form_id = 1
-
     dynamic_form = DynamicForm.objects.get(pk=form_id)
+    for field in dynamic_form.form_fields.all():
+        field_label = field.label
+        form_data[field_label] = request.POST.get(field_label)
 
-    if request.method == 'POST':
-        form_data = {}
+    return form_data
 
-        for field in dynamic_form.form_fields.all():
-            field_label = field.label
-            form_data[field_label] = request.POST.get(field_label)
-            return HttpResponse('Analise Enviada com Sucesso')
-        print(form_data)
-            
-            
-    else:
-        # Renderizar o formulário com base nos campos associados
-        fields = dynamic_form.form_fields.all()
-        context = {'dynamic_form': dynamic_form, 'fields': fields}
-        return render(request, 'form.html', context)
+
+@shared_task
+def process_form(form_data):
+    
+    form_data = get_form_data()
+
+    r = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r.lpush('fila_request', json.dumps(form_data))
