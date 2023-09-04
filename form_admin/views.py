@@ -1,4 +1,5 @@
 from django.shortcuts import render, HttpResponse
+from django.http import JsonResponse
 from .models import DynamicForm
 from .tasks import process_form, get_form_data
 
@@ -9,14 +10,17 @@ def dynamic_form_view(request, form_id):
         form_id = 1
 
     dynamic_form = DynamicForm.objects.get(pk=form_id)
-
+    
     if request.method == 'POST':
-        form_data = get_form_data(request, dynamic_form, form_id)
+        form_data = {}
 
-        process_form.delay(form_data)
-        return HttpResponse('Analise Enviada com Sucesso')
-        
+        for field in dynamic_form.form_fields.all():
+            field_id = field.label
+            form_data[field_id] = request.POST.get(field_id)
             
+        process_form.delay(form_data)
+        return JsonResponse(form_data)
+              
             
     else:
         #Renderizar o formulário com base nos campos

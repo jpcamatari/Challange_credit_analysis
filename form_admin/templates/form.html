@@ -15,13 +15,13 @@
             <h3>{{ dynamic_form.title }}</h3>
             <div class="mb-3 mt-2 p-3 gap-3">
                 {% for field in dynamic_form.form_fields.all %}
-                    <label for="{{ field.id }}">{{ field.label }}</label><br>
+                    <label for="{{ field.label }}">{{ field.label }}</label><br>
                     {% if field.field_type == 'text' %}
-                        <input type="text" name="{{ field.id }}" id="{{ field.id }}"><br>
+                        <input type="text" name="{{ field.label }}" id="{{ field.label }}"><br>
                     {% elif field.field_type == 'number' %}
-                        <input type="number" name="{{ field.id }}" id="{{ field.id }}"><br>
+                        <input type="number" name="{{ field.label }}" id="{{ field.label }}"><br>
                     {% elif field.field_type == 'date' %}
-                        <input type="date" name="{{ field.id }}" id="{{ field.id }}"><br>
+                        <input type="date" name="{{ field.label }}" id="{{ field.label }}"><br>
                     {% endif %}
                 {% endfor %}
             </div>
