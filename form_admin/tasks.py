@@ -9,6 +9,8 @@ from .models import FormSubmission
 
 @shared_task
 def process_form(form_data):
+    r = redis.StrictRedis(host='127.0.0.1', port=6379, db=0)
+    r.lpush('fila_request', json.dumps(form_data))
 
     if len(form_data) >= 2:
         name = next(iter(form_data.values()))
@@ -26,7 +28,7 @@ def process_form(form_data):
         data=form_data,
         response_data=response.json() if response.status_code == 200 else {},)
         form_submission.save()
-        
+
 
         
 
@@ -36,5 +38,4 @@ def process_form(form_data):
     else:
         return HttpResponse('Erro: Falta de argumentos')
 
-    #r = redis.StrictRedis(host='localhost', port=6379, db=0)
-    #r.lpush('fila_request', json.dumps(form_data))
+    

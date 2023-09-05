@@ -13,8 +13,8 @@ class DynamicFormAdmin(admin.ModelAdmin):
 class FormSubmissionAdmin(admin.ModelAdmin):
     list_display = ('data', 'response_data')
     list_filter = ('response_data',)
-    list_editable = ('response_data')
-    
+    list_editable = ('response_data',)
+
 
 
 admin.site.register(DynamicFormField)
