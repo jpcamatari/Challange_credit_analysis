@@ -1,7 +1,7 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render
 from django.http import JsonResponse
 from .models import DynamicForm
-from .tasks import process_form, get_form_data
+from .tasks import process_form
 
 
 

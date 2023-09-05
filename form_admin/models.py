@@ -13,4 +13,11 @@ class DynamicForm(models.Model):
 
     def __str__(self):
         return self.title
+    
+class FormSubmission(models.Model):
+    data = models.JSONField()
+    response_data = models.JSONField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.data

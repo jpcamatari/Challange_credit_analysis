@@ -1,26 +1,40 @@
 from celery import shared_task
 import redis
 import json
-from .models import DynamicForm
-
-
-def get_form_data(request, dynamic_form, form_id):
-    form_data = {}
-    if form_id is None:
-        form_id = 1
-    dynamic_form = DynamicForm.objects.get(pk=form_id)
-    for field in dynamic_form.form_fields.all():
-        field_id = field.label
-        form_data[field_id] = request.POST.get(field_id)
-
-    return form_data
+import requests
+from django.http import HttpResponse
+import requests
+from .models import FormSubmission
 
 
 @shared_task
 def process_form(form_data):
-    
-    form_data = get_form_data()
-    return form_data
+
+    if len(form_data) >= 2:
+        name = next(iter(form_data.values()))
+        document = next(iter(form_data.values(), list(form_data.values())[1]))
+        
+        api = 'https://loan-processor.digitalsys.com.br/swagger/index.html#/Loan/post_loan_/loan/'
+
+        data = {
+        'name': name,
+        'document': document,
+        }
+        response = requests.post(api, data=data)
+
+        form_submission = FormSubmission.objects.create(
+        data=form_data,
+        response_data=response.json() if response.status_code == 200 else {},)
+        form_submission.save()
+        
+
+        
+
+
+
+
+    else:
+        return HttpResponse('Erro: Falta de argumentos')
 
     #r = redis.StrictRedis(host='localhost', port=6379, db=0)
     #r.lpush('fila_request', json.dumps(form_data))
