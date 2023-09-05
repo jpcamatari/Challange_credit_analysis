@@ -3,7 +3,6 @@ import redis
 import json
 import requests
 from django.http import HttpResponse
-import requests
 from .models import FormSubmission
 
 
@@ -28,12 +27,6 @@ def process_form(form_data):
         data=form_data,
         response_data=response.json() if response.status_code == 200 else {},)
         form_submission.save()
-
-
-        
-
-
-
 
     else:
         return HttpResponse('Erro: Falta de argumentos')
